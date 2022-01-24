@@ -39,7 +39,7 @@ function Titulo(props){
             <style jsx>{
                 `
                     ${Tag} {
-                        color: red;
+                        color: ${appConfig.theme.colors.primary[500]};
                     }
                 `
             }
@@ -47,19 +47,6 @@ function Titulo(props){
         </>
     )
 }
-
-
-// function HomePage() {
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Titulo tag='h1'>Boas vindas de volta!</Titulo>    
-//             <h2>Discord - Alura Matrix</h2>
-//         </div>
-//         ) 
-//   }
-  
-//   export default HomePage
 
 export default function PaginaInicial() {
     const username = 'matheusmfeitoza';
@@ -71,7 +58,7 @@ export default function PaginaInicial() {
           styleSheet={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             backgroundColor: appConfig.theme.colors.primary[500],
-            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+            backgroundImage: 'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/i-turn-coffee-into-code-plaque.jpg)',
             backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
           }}
         >
@@ -120,8 +107,8 @@ export default function PaginaInicial() {
                 fullWidth
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
-                  mainColor: appConfig.theme.colors.primary[500],
-                  mainColorLight: appConfig.theme.colors.primary[400],
+                  mainColor: appConfig.theme.colors.primary[1000],
+                  mainColorLight: appConfig.theme.colors.primary[200],
                   mainColorStrong: appConfig.theme.colors.primary[600],
                 }}
               />
