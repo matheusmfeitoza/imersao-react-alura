@@ -1,11 +1,19 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
+import CustomBtn from "../components/CustomBtn";
 
 export default function ChatPage() {
   // Sua lógica vai aqui
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
+
+  const handleDelete = (mensagem) => {
+    const deleteMesangem = listaMensagem.filter(
+      (msg) => msg.id !== mensagem.id
+    );
+    setListaMensagem(deleteMesangem);
+  };
 
   const handleNovaMensagem = (novaMensagem) => {
     const mensagem = {
@@ -55,6 +63,7 @@ export default function ChatPage() {
             position: "relative",
             display: "flex",
             flex: 1,
+            wordWrap: "break-word",
             height: "80%",
             backgroundColor: appConfig.theme.colors.neutrals[600],
             flexDirection: "column",
@@ -95,6 +104,13 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+            <CustomBtn
+              onClick={() => {
+                mensagem.length > 2 ? handleNovaMensagem(mensagem) : null;
+              }}
+            >
+              {"/images/send.svg"}
+            </CustomBtn>
           </Box>
         </Box>
       </Box>
@@ -134,6 +150,7 @@ function MessageList({ mensagens }) {
         overflow: "scroll",
         overflowX: "hidden",
         display: "flex",
+        wordWrap: "break-word",
         flexDirection: "column-reverse",
         flex: 1,
         color: appConfig.theme.colors.neutrals["000"],
@@ -143,49 +160,53 @@ function MessageList({ mensagens }) {
     >
       {mensagens.map((mensagem) => {
         return (
-          <Text
-            key={mensagem.id}
-            tag="li"
-            styleSheet={{
-              borderRadius: "5px",
-              padding: "6px",
-              marginBottom: "12px",
-              wordWrap: "break-word",
-              hover: {
-                backgroundColor: appConfig.theme.colors.neutrals[700],
-              },
-            }}
-          >
-            <Box
+          <>
+            <Text
+              key={mensagem.id}
+              tag="li"
               styleSheet={{
-                marginBottom: "8px",
+                borderRadius: "5px",
+                padding: "6px",
+                marginBottom: "12px",
+                wordWrap: "break-word",
+                hover: {
+                  backgroundColor: appConfig.theme.colors.neutrals[700],
+                },
               }}
             >
-              <Image
+              <Box
                 styleSheet={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  display: "inline-block",
-                  marginRight: "8px",
+                  display: "flex",
+                  marginBottom: "8px",
                 }}
-                src={`https://github.com/vanessametonini.png`}
-              />
-              <Text tag="strong">{mensagem.de}</Text>
-              <Text
-                styleSheet={{
-                  fontSize: "10px",
-                  marginLeft: "8px",
-                  color: appConfig.theme.colors.neutrals[300],
-                }}
-                tag="span"
               >
-                {new Date().toLocaleDateString()} - {new Date().getHours()}:
-                {new Date().getMinutes()}
-              </Text>
-            </Box>
-            {mensagem.texto}
-          </Text>
+                <Image
+                  styleSheet={{
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "50%",
+                    display: "inline-block",
+                    marginRight: "8px",
+                  }}
+                  src={`https://github.com/matheusmfeitoza.png`}
+                />
+                <Text tag="strong">{mensagem.de}</Text>
+                <Text
+                  styleSheet={{
+                    fontSize: "10px",
+                    marginLeft: "8px",
+                    color: appConfig.theme.colors.neutrals[300],
+                  }}
+                  tag="span"
+                >
+                  {new Date().toLocaleDateString()} - {new Date().getHours()}:
+                  {new Date().getMinutes()}
+                </Text>
+                <CustomBtn>{"/images/trash2.svg"}</CustomBtn>
+              </Box>
+              {mensagem.texto}
+            </Text>
+          </>
         );
       })}
     </Box>
