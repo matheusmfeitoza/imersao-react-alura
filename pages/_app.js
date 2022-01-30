@@ -9,6 +9,7 @@ function GlobalStyle() {
       }
       body {
         font-family: "Open Sans", sans-serif;
+        word-wrap: break-word;
       }
       /* App fit Height */
       html,

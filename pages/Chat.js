@@ -41,6 +41,7 @@ export default function ChatPage() {
           display: "flex",
           flexDirection: "column",
           flex: 1,
+          wordBreak: "break-all",
           boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
           borderRadius: "5px",
           backgroundColor: appConfig.theme.colors.neutrals[700],
