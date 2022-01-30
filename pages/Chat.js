@@ -8,13 +8,6 @@ export default function ChatPage() {
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
 
-  const handleDelete = (mensagem) => {
-    const deleteMesangem = listaMensagem.filter(
-      (msg) => msg.id !== mensagem.id
-    );
-    setListaMensagem(deleteMesangem);
-  };
-
   const handleNovaMensagem = (novaMensagem) => {
     const mensagem = {
       id: listaMensagem.length + 1,
@@ -71,7 +64,10 @@ export default function ChatPage() {
             padding: "16px",
           }}
         >
-          <MessageList mensagens={listaMensagem} />
+          <MessageList
+            mensagens={listaMensagem}
+            setListaMensagem={setListaMensagem}
+          />
           <Box
             as="form"
             styleSheet={{
@@ -142,7 +138,7 @@ function Header() {
   );
 }
 
-function MessageList({ mensagens }) {
+function MessageList({ mensagens, setListaMensagem }) {
   return (
     <Box
       tag="ul"
@@ -202,7 +198,16 @@ function MessageList({ mensagens }) {
                   {new Date().toLocaleDateString()} - {new Date().getHours()}:
                   {new Date().getMinutes()}
                 </Text>
-                <CustomBtn>{"/images/trash2.svg"}</CustomBtn>
+                <CustomBtn
+                  onClick={() => {
+                    const deleteMesangem = mensagens.filter(
+                      (msg) => msg.id !== mensagem.id
+                    );
+                    setListaMensagem(deleteMesangem);
+                  }}
+                >
+                  {"/images/trash2.svg"}
+                </CustomBtn>
               </Box>
               {mensagem.texto}
             </Text>
