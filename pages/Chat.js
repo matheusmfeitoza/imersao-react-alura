@@ -2,20 +2,56 @@ import { Box, Text, TextField, Image, Button } from "@skynexui/components";
 import React from "react";
 import appConfig from "../config.json";
 import CustomBtn from "../components/CustomBtn";
+import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
+import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzY3OTIwOCwiZXhwIjoxOTU5MjU1MjA4fQ.ci6lZiTntNtEAtp1svAt_FYqLOmtL1qnwEEFiPYMwHg";
+const SUPABASE_URL = "https://itgtxwzxloqovvvivgnz.supabase.co";
+
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
   // Sua lógica vai aqui
+  const roteamento = useRouter();
+  const userLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  function escutaMensagens() {
+    return supabaseClient
+      .from("mensagens")
+      .on("INSERT", (oqueveio) => {
+        console.log(oqueveio);
+      })
+      .subscribe();
+  }
+
+  React.useEffect(() => {
+    supabaseClient
+      .from("mensagens")
+      .select("*")
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        setListaMensagem(data);
+      });
+    escutaMensagens();
+  }, []);
 
   const handleNovaMensagem = (novaMensagem) => {
     const mensagem = {
-      id: listaMensagem.length + 1,
-      de: "matheusmfeitoza",
+      de: userLogado,
       texto: novaMensagem,
     };
     if (mensagem.texto !== "") {
-      setListaMensagem([mensagem, ...listaMensagem]);
+      supabaseClient
+        .from("mensagens")
+        .insert([mensagem])
+        .then(({ data }) => {
+          console.log(data);
+        });
       setMensagem("");
     } else {
       alert("Sua mensagem não pode ser vazia");
@@ -68,6 +104,7 @@ export default function ChatPage() {
           <MessageList
             mensagens={listaMensagem}
             setListaMensagem={setListaMensagem}
+            loading={loading}
           />
           <Box
             as="form"
@@ -99,6 +136,11 @@ export default function ChatPage() {
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 marginRight: "12px",
                 color: appConfig.theme.colors.neutrals[200],
+              }}
+            />
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                handleNovaMensagem(`:sticker: ${sticker}`);
               }}
             />
             <CustomBtn
@@ -139,7 +181,7 @@ function Header() {
   );
 }
 
-function MessageList({ mensagens, setListaMensagem }) {
+function MessageList({ mensagens, setListaMensagem, loading }) {
   return (
     <Box
       tag="ul"
@@ -185,7 +227,7 @@ function MessageList({ mensagens, setListaMensagem }) {
                     display: "inline-block",
                     marginRight: "8px",
                   }}
-                  src={`https://github.com/matheusmfeitoza.png`}
+                  src={`https://github.com/${mensagem.de}.png`}
                 />
                 <Text tag="strong">{mensagem.de}</Text>
                 <Text
@@ -210,7 +252,11 @@ function MessageList({ mensagens, setListaMensagem }) {
                   {"/images/trash2.svg"}
                 </CustomBtn>
               </Box>
-              {mensagem.texto}
+              {mensagem.texto.startsWith(":sticker:") ? (
+                <Image src={mensagem.texto.replace(":sticker:", "")} />
+              ) : (
+                mensagem.texto
+              )}
             </Text>
           </>
         );

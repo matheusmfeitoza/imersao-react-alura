@@ -67,7 +67,7 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={(e) => {
               e.preventDefault();
-              if (userName.length > 2) rota.push("/Chat");
+              if (userName.length > 2) rota.push(`/Chat?username=${userName}`);
               else alert("Seu username deve ser maior que 2 caracteres");
             }}
             styleSheet={{
