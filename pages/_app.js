@@ -1,4 +1,4 @@
-import { userProvider } from "../context/UserContext";
+import { UserProvider } from "../context/UserContext";
 
 function GlobalStyle() {
   return (
@@ -35,10 +35,10 @@ function GlobalStyle() {
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
-      <userProvider>
+      <UserProvider>
         <GlobalStyle />
         <Component {...pageProps} />
-      </userProvider>
+      </UserProvider>
     </>
   );
 }

@@ -3,6 +3,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import appConfig from "../config.json";
 import next from "next";
+import { UserContext } from "../context/UserContext";
 
 function Titulo(props) {
   const Tag = props.tag || "h1";
@@ -22,7 +23,7 @@ function Titulo(props) {
 }
 
 export default function PaginaInicial() {
-  const [userName, setUserName] = React.useState("");
+  const { userName, setUserName } = React.useContext(UserContext);
   const rota = useRouter();
   const image =
     userName.length > 2
@@ -67,7 +68,7 @@ export default function PaginaInicial() {
             as="form"
             onSubmit={(e) => {
               e.preventDefault();
-              if (userName.length > 2) rota.push(`/Chat?username=${userName}`);
+              if (userName.length > 2) rota.push(`/Chat`);
               else alert("Seu username deve ser maior que 2 caracteres");
             }}
             styleSheet={{
