@@ -85,7 +85,7 @@ export default function ChatPage() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: appConfig.theme.colors.primary[500],
-        backgroundImage: `url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)`,
+        backgroundImage: `url(https://nerdizmo.uai.com.br/wp-content/uploads/sites/29/2021/05/wallpapers-do-star-wars-01-scaled.jpg)`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundBlendMode: "multiply",
