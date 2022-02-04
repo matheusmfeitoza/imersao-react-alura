@@ -31,14 +31,21 @@ export default function ChatPage() {
       .subscribe();
   }
 
-  function deletaMensagens(msg) {
+  function escutaMensagemDeletada(handleDeleteMensagem) {
     return supabaseClient
       .from("mensagens")
       .on("DELETE", async (date) => {
-        msg(date);
+        handleDeleteMensagem(date);
       })
       .subscribe();
   }
+
+  const handleDeleteMensagem = (mensagem) => {
+    const mensagemDeletada = listaMensagem.filter(
+      (mensagemId) => mensagemId.id !== mensagem
+    );
+    setListaMensagem(mensagemDeletada);
+  };
 
   React.useEffect(() => {
     supabaseClient
@@ -53,7 +60,7 @@ export default function ChatPage() {
         return [date, ...valorAtual];
       });
     });
-  }, [deletaMensagem]);
+  }, [listaMensagem]);
 
   const handleNovaMensagem = (novaMensagem) => {
     const mensagem = {
@@ -64,9 +71,7 @@ export default function ChatPage() {
       supabaseClient
         .from("mensagens")
         .insert([mensagem])
-        .then(({ data }) => {
-          console.log(data);
-        });
+        .then(({ data }) => {});
       setMensagem("");
     } else {
       alert("Sua mensagem não pode ser vazia");
@@ -121,9 +126,9 @@ export default function ChatPage() {
             setListaMensagem={setListaMensagem}
             loading={loading}
             userName={userName}
-            deletaMensagens={deletaMensagens}
+            escutaMensagemDeletada={escutaMensagemDeletada}
             superbase={supabaseClient}
-            deletaMensagem={deletaMensagem}
+            deletaMensagem={handleDeleteMensagem}
             setDeletaMensagem={setDeletaMensagem}
           />
           <Box
@@ -204,7 +209,7 @@ function Header() {
 function MessageList({
   mensagens,
   userName,
-  deletaMensagens,
+  escutaMensagemDeletada,
   superbase,
   setDeletaMensagem,
 }) {
@@ -271,13 +276,14 @@ function MessageList({
                   onClick={() => {
                     if (mensagem.de === userName) {
                       superbase
-                        .from("mensagem")
+                        .from("mensagens")
                         .delete([mensagem])
-                        .match({ de: `${mensagem.de}` })
+                        .match({ id: `${mensagem.id}` })
                         .then(() => {});
 
-                      deletaMensagens((mensagem) => {
-                        setDeletaMensagem((valor) => !valor);
+                      escutaMensagemDeletada((mensagem) => {
+                        console.log(mensagem.id);
+                        handleDeleteMensagem(mensagem.id);
                       });
                     }
                   }}
