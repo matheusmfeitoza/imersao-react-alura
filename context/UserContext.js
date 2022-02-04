@@ -6,7 +6,7 @@ const UserProvider = ({ children }) => {
   const [userName, setUserName] = React.useState("");
 
   return (
-    <UserContext.Provider value={(userName, setUserName)}>
+    <UserContext.Provider value={{ userName, setUserName }}>
       {children}
     </UserContext.Provider>
   );

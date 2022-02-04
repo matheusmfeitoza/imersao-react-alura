@@ -5,6 +5,7 @@ import CustomBtn from "../components/CustomBtn";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/router";
 import { ButtonSendSticker } from "../src/components/ButtonSendSticker";
+import { UserContext } from "../context/UserContext";
 
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzY3OTIwOCwiZXhwIjoxOTU5MjU1MjA4fQ.ci6lZiTntNtEAtp1svAt_FYqLOmtL1qnwEEFiPYMwHg";
@@ -15,16 +16,34 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 export default function ChatPage() {
   // Sua lógica vai aqui
   const roteamento = useRouter();
-  const userLogado = roteamento.query.username;
   const [mensagem, setMensagem] = React.useState("");
   const [listaMensagem, setListaMensagem] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const { userName } = React.useContext(UserContext);
+  const [deletaMensagem, setDeletaMensagem] = React.useState("");
 
+<<<<<<< HEAD
   function escutaMensagens(handleNovaMensagem) {
     return supabaseClient
       .from("mensagens")
       .on("INSERT", (dado) => {
         handleNovaMensagem(dado.new);
+=======
+  function escutaMensagens(addNovaMensagem) {
+    return supabaseClient
+      .from("mensagens")
+      .on("INSERT", async (data) => {
+        addNovaMensagem(data.new);
+      })
+      .subscribe();
+  }
+
+  function deletaMensagens(msg) {
+    return supabaseClient
+      .from("mensagens")
+      .on("DELETE", async (date) => {
+        msg(date);
+>>>>>>> 44727355cb3cf54430b4b42a8c4d6e7a0ec6c936
       })
       .subscribe();
   }
@@ -37,12 +56,16 @@ export default function ChatPage() {
       .then(({ data }) => {
         setListaMensagem(data);
       });
-    escutaMensagens();
-  }, []);
+    escutaMensagens((date) => {
+      setListaMensagem((valorAtual) => {
+        return [date, ...valorAtual];
+      });
+    });
+  }, [deletaMensagem]);
 
   const handleNovaMensagem = (novaMensagem) => {
     const mensagem = {
-      de: userLogado,
+      de: userName,
       texto: novaMensagem,
     };
     if (mensagem.texto !== "") {
@@ -105,6 +128,11 @@ export default function ChatPage() {
             mensagens={listaMensagem}
             setListaMensagem={setListaMensagem}
             loading={loading}
+            userName={userName}
+            deletaMensagens={deletaMensagens}
+            superbase={supabaseClient}
+            deletaMensagem={deletaMensagem}
+            setDeletaMensagem={setDeletaMensagem}
           />
           <Box
             as="form"
@@ -181,7 +209,13 @@ function Header() {
   );
 }
 
-function MessageList({ mensagens, setListaMensagem, loading }) {
+function MessageList({
+  mensagens,
+  userName,
+  deletaMensagens,
+  superbase,
+  setDeletaMensagem,
+}) {
   return (
     <Box
       tag="ul"
@@ -243,10 +277,17 @@ function MessageList({ mensagens, setListaMensagem, loading }) {
                 </Text>
                 <CustomBtn
                   onClick={() => {
-                    const deleteMesangem = mensagens.filter(
-                      (msg) => msg.id !== mensagem.id
-                    );
-                    setListaMensagem(deleteMesangem);
+                    if (mensagem.de === userName) {
+                      superbase
+                        .from("mensagem")
+                        .delete([mensagem])
+                        .match({ de: `${mensagem.de}` })
+                        .then(() => {});
+
+                      deletaMensagens((mensagem) => {
+                        setDeletaMensagem((valor) => !valor);
+                      });
+                    }
                   }}
                 >
                   {"/images/trash2.svg"}
