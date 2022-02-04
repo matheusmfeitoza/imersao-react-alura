@@ -20,11 +20,11 @@ export default function ChatPage() {
   const [listaMensagem, setListaMensagem] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
-  function escutaMensagens() {
+  function escutaMensagens(handleNovaMensagem) {
     return supabaseClient
       .from("mensagens")
-      .on("INSERT", (oqueveio) => {
-        console.log(oqueveio);
+      .on("INSERT", (dado) => {
+        handleNovaMensagem(dado.new);
       })
       .subscribe();
   }
