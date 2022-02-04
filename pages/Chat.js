@@ -285,6 +285,8 @@ function MessageList({
                         console.log(mensagem.id);
                         handleDeleteMensagem(mensagem.id);
                       });
+                    } else {
+                      alert("Você só pode deletar as suas mensagens!");
                     }
                   }}
                 >
