@@ -22,13 +22,6 @@ export default function ChatPage() {
   const { userName } = React.useContext(UserContext);
   const [deletaMensagem, setDeletaMensagem] = React.useState("");
 
-<<<<<<< HEAD
-  function escutaMensagens(handleNovaMensagem) {
-    return supabaseClient
-      .from("mensagens")
-      .on("INSERT", (dado) => {
-        handleNovaMensagem(dado.new);
-=======
   function escutaMensagens(addNovaMensagem) {
     return supabaseClient
       .from("mensagens")
@@ -43,7 +36,6 @@ export default function ChatPage() {
       .from("mensagens")
       .on("DELETE", async (date) => {
         msg(date);
->>>>>>> 44727355cb3cf54430b4b42a8c4d6e7a0ec6c936
       })
       .subscribe();
   }
